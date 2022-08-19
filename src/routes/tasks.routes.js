@@ -1,26 +1,15 @@
 import { Router } from "express";
-const router = Router()
-import pool from '../db.js'
+const router = Router();
+import { createTask, deleteTask, getAllTasks, getTask, updateTask } from "../controllers/tasks.controller.js";
 
-router.get('/tasks', async (req, res) =>{
-    const result = await pool.query('SELECT NOW()')
-    res.json(result.rows[0].now)
-})
+router.get("/tasks", getAllTasks);
 
-router.get('/tasks/:id', (req, res) =>{
-    res.send('Returning a single task')
-})
+router.get("/tasks/:id", getTask);
 
-router.post('/tasks', (req, res) =>{
-    res.send('Creating a list of tasks')
-})
+router.post("/tasks", createTask);
 
-router.put('/tasks', (req, res) =>{
-    res.send('Deleting a list of tasks')
-})
+router.put("/tasks/:id", updateTask);
 
-router.delete('/tasks', (req, res) =>{
-    res.send('Updating a list of tasks')
-})
+router.delete("/tasks/:id", deleteTask);
 
-export default router
+export default router;
