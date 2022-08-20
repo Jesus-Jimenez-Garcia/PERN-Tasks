@@ -1,10 +1,12 @@
 import express from "express";
 import morgan from "morgan";
 import taskRouter from "./routes/tasks.routes.js";
-import "dotenv";
+import db from "./config.js"
+import cors from 'cors'
 
 const app = express();
 
+app.use(cors())
 app.use(morgan("dev"));
 app._router.use(express.json());
 app._router.use(express.text());
@@ -17,5 +19,5 @@ app.use((err, req, res, next)=>{
     })
 });
 
-app.listen(process.env.PORT);
-console.log(`Server on port ${process.env.PORT}`);
+app.listen(db.port);
+console.log(`Server on port ${db.port}`);
