@@ -5,24 +5,41 @@ import {
   CardContent,
   TextField,
   Button,
+  CircularProgress,
 } from "@mui/material";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 function TaskForm() {
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(task);
-  };
-
-  const handleChange = e =>{
-    setTask({...task,[e.target.name]: e.target.value});
-  }
-
   const [task, setTask] = useState({
     title: "",
     description: "",
   });
+
+  const [load, setload] = useState(false);
+
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    setload(true);
+
+    const res = await fetch("http://localhost:4000/tasks", {
+      method: "POST",
+      body: JSON.stringify(task),
+      headers: { "Content-Type": "application/json" },
+    });
+    const data = await res.json();
+    console.log(data);
+
+    setload(false);
+    navigate("/");
+  };
+
+  const handleChange = (e) => {
+    setTask({ ...task, [e.target.name]: e.target.value });
+  };
 
   return (
     <Grid
@@ -42,7 +59,6 @@ function TaskForm() {
                 variant="filled"
                 label="Write your title"
                 sx={{ display: "block", margin: ".5rem 0" }}
-
                 name="title"
                 onChange={handleChange}
                 inputProps={{ style: { color: "white" } }}
@@ -54,16 +70,14 @@ function TaskForm() {
                 multiline
                 rows={4}
                 sx={{ display: "block", margin: ".5rem 0" }}
-                
-
                 name="description"
                 onChange={handleChange}
                 inputProps={{ style: { color: "white" } }}
                 InputLabelProps={{ style: { color: "white" } }}
               />
 
-              <Button variant="contained" color="primary" type="submit">
-                Save
+              <Button variant="contained" color="primary" type="submit" disabled={!task.title || !task.description}>
+                {load ? <CircularProgress color="inherit" size={24} /> : "Create"}
               </Button>
             </form>
           </CardContent>
